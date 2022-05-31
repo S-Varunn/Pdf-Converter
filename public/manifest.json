@@ -1,0 +1,15 @@
+{
+  
+  "name": "Chrome pdf export extension",
+   "description": "Export anything in a webpage as a pdf",
+   "version": "1.0",
+   "manifest_version": 3,
+   "action": {
+       "default_popup": "index.html",
+       "default_title": "Open the popup"
+   },
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
