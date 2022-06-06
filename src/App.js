@@ -1,20 +1,37 @@
-import { useState } from "react";
-import Modal from "./components/modal/Modal";
+/*global chrome*/
 
 function App() {
-  const [openModal, setOpenModal] = useState(false);
+  function totalPdfExport() {
+    let params = {
+      active: true,
+      currentWindow: true,
+    };
+    chrome.tabs.query(params, currentTabs);
+    function currentTabs(tabs) {
+      let message = {
+        element: "all",
+      };
+      chrome.tabs.sendMessage(tabs[0].id, message, function (response) {
+        document.getElementById("test").innerHTML = response;
+        console.log(response);
+      });
+    }
+  }
+
   return (
     <div>
+      PDF Export! Webpage Export:
       <p>Choose a element to Export</p>
-      <br></br>
       <button
         onClick={() => {
-          setOpenModal(!openModal);
+          totalPdfExport();
         }}
+        type="button"
+        id="button"
       >
-        Full Page
+        Export
       </button>
-      {openModal ? <Modal /> : null}
+      <div id="test"></div>
     </div>
   );
 }
