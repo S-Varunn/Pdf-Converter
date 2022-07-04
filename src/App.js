@@ -9,10 +9,9 @@ function App() {
     chrome.tabs.query(params, currentTabs);
     function currentTabs(tabs) {
       let message = {
-        element: "all",
+        element: "table",
       };
       chrome.tabs.sendMessage(tabs[0].id, message, function (response) {
-        document.getElementById("test").innerHTML = response;
         console.log(response);
       });
     }

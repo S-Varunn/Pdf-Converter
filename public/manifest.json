@@ -8,7 +8,7 @@
     "https://*/"
   ],
   "permissions": [
-    "tabs"
+    "tabs","storage","declarativeContent","activeTab"
   ],
   "content_scripts": [
     {
@@ -16,7 +16,7 @@
         "https://*/*"
       ],
       "js": [
-        "content.js"
+        "content.js","jquery.js"
       ]
     }
   ],
