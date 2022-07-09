@@ -1,0 +1,28 @@
+.arrow-down {
+    margin: auto;
+    box-sizing: border-box;
+    height: 5vw;
+    width: 5vw;
+    border-style: solid;
+    border-color: white;
+    border-width: 0px 1px 5px 0px;
+    transform: rotate(45deg);
+    transition: border-width 150ms ease-in-out;
+  }
+  .arrow-up {
+    margin: auto;
+    box-sizing: border-box;
+    height: 5vw;
+    width: 5vw;
+    border-style: solid;
+    border-color: white;
+    border-width: 0px 1px 5px 0px;
+    transform: rotate(225deg);
+    transition: border-width 150ms ease-in-out;
+  }
+  .arrow-up:hover {
+    border-width: 0px 5px 1px 0px;
+  }
+  .arrow-down:hover {
+    border-width: 0px 5px 1px 0px;
+  }
