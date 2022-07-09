@@ -1,6 +1,7 @@
 console.log("Hi content script");
 // window.alert("Hi");
 chrome.runtime.onMessage.addListener(executeRequest);
+let cssArray = [];
 
 async function executeRequest(request, sender, sendResponse) {
   console.log(request);
@@ -17,8 +18,16 @@ async function executeRequest(request, sender, sendResponse) {
       if (request.export === true) {
         tableCollection[request.value].style.boxShadow = "";
         tableCollection[request.value].style.zIndex = "";
+        let container = document.getElementsByClassName(
+          "custom-wrap-container"
+        );
+        let ans = helper(container[0], []);
         await sendResponse({
-          result: { html: tableCollection[request.value].innerHTML, css: "" },
+          result: {
+            html: tableCollection[request.value].innerHTML,
+            css: JSON.stringify(cssArray),
+            cssMapping: JSON.stringify(ans),
+          },
         });
       } else {
         tableCollection[request.prevValue].style.boxShadow = "";
@@ -59,6 +68,51 @@ async function executeRequest(request, sender, sendResponse) {
     while (el.firstChild) parent.insertBefore(el.firstChild, el);
     parent.removeChild(el);
   }
+}
+
+const styleToString = (test) => {
+  return Object.keys(test).reduce(
+    (acc, key) =>
+      acc +
+      key
+        .split(/(?=[A-Z])/)
+        .join("-")
+        .toLowerCase() +
+      ":" +
+      test[key] +
+      ";",
+    ""
+  );
+};
+
+function helper(root, ans) {
+  if (!root) {
+    return ans;
+  }
+  const comp = window.getComputedStyle(root);
+  const compCss = Object.keys(comp)
+    .filter((key) => !Number(key))
+    .reduce((obj, key) => {
+      return Object.assign(obj, {
+        [key]: comp[key],
+      });
+    }, {});
+  let flag = false;
+  for (let i = 0; i < cssArray.length; i++) {
+    if (cssArray[i] === styleToString(compCss)) {
+      ans.push(i);
+      flag = true;
+      break;
+    }
+  }
+  if (flag === false) {
+    cssArray.push(styleToString(compCss));
+    ans.push(cssArray.length - 1);
+  }
+  for (let child of root.children) {
+    helper(child, ans);
+  }
+  return ans;
 }
 
 // col[1].scrollIntoView({behaviour:"smooth",block:"center"})

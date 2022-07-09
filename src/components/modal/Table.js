@@ -56,8 +56,11 @@ function Table() {
         export: true,
       };
       chrome.tabs.sendMessage(tabs[0].id, message, function (response) {
+        console.log(response);
         goTo(ExportContent, {
-          message: response.result.html,
+          html: response.result.html,
+          css: response.result.css,
+          cssMapping: response.result.cssMapping,
         });
       });
     }
