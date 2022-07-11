@@ -28,16 +28,16 @@ function ExportContent({ html, css, cssMapping }) {
   }
 
   const generatePDF = () => {
-    const report = new JsPDF("l", "pt", "a4");
-
-    report
-      .html(document.querySelector("#report"), {
-        // Adjust your margins here (left, top, right ,bottom)
-        margin: [40, 60, 40, 60],
-      })
-      .then(() => {
-        report.save("report.pdf");
-      });
+    const pdf = new JsPDF("l", "px", "letter");
+    pdf.html(document.querySelector("#report"), {
+      callback: function (doc) {
+        pdf.save("table.pdf");
+      },
+      x: 10,
+      y: 10,
+      margin: [40, 60, 40, 60],
+      html2canvas: { scale: 0.5 },
+    });
   };
 
   return (
@@ -46,7 +46,7 @@ function ExportContent({ html, css, cssMapping }) {
         content={() => ref.current}
         trigger={() => <a href="#">Print this out!</a>}
       /> */}
-      <button onClick={generatePDF} type="button">
+      <button className="button" onClick={generatePDF} type="button">
         Export PDF
       </button>
       <div id="report">
