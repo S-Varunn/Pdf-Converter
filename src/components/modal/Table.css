@@ -26,3 +26,47 @@
   .arrow-down:hover {
     border-width: 0px 5px 1px 0px;
   }
+  .close {
+    position: absolute;
+    right: 32px;
+    top: 32px;
+    width: 32px;
+    height: 32px;
+    opacity: 0.3;
+  }
+  .close:hover {
+    opacity: 1;
+  }
+  .close:before, .close:after {
+    background-color: #fffefe;
+    content: " ";
+    height: 25px;
+    left: 15px;
+    position: absolute;
+    width: 4px;
+  }
+  .close:before {
+    transform: rotate(45deg);
+  }
+  .close:after {
+    transform: rotate(-45deg);
+  }
+  
+.error-page{
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  align-items: center;
+}
+.error-img{
+  height: 120px;
+  width: auto;
+  margin: auto;
+}
+.error-message{
+  color: white;
+  font-family: 'Edu TAS Beginner', cursive;
+  font-size: xx-large;
+  font-weight: bolder;
+  text-align-last: center;
+  text-align: center;
+}
