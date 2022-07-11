@@ -3,7 +3,8 @@ import React from "react";
 import { useEffect, useState } from "react";
 import ExportContent from "../ExportContent";
 import "./Table.css";
-import { goTo } from "react-chrome-extension-router";
+import { goTo, goBack } from "react-chrome-extension-router";
+import errorImg from "../../assets/error.png";
 
 function Table() {
   const [iteration, setIteration] = useState(0);
@@ -14,67 +15,70 @@ function Table() {
     active: true,
     currentWindow: true,
   };
+  function executeRequest(payload, handleResponse) {
+    chrome.tabs.query(params, currentTabs);
+    function currentTabs(tabs) {
+      chrome.tabs.sendMessage(tabs[0].id, payload, function (response) {
+        handleResponse(response);
+      });
+    }
+  }
+  function logIt() {
+    console.log("Done processing");
+  }
+  function handleCheck(response) {
+    setTableExist(response.result);
+    if (response.result === true) {
+      setNumberOfTables(response.numberOfTables);
+    }
+  }
+  function handleExportTable(response) {
+    goTo(ExportContent, {
+      html: response.result.html,
+      css: response.result.css,
+      cssMapping: response.result.cssMapping,
+    });
+  }
   useEffect(() => {
     if (tableExist) {
-      chrome.tabs.query(params, currentTabs);
-      function currentTabs(tabs) {
-        let message = {
+      executeRequest(
+        {
           element: "table",
           value: iteration,
           prevValue: preIteration,
           check: false,
           export: false,
-        };
-        chrome.tabs.sendMessage(tabs[0].id, message, function (response) {
-          console.log(response);
-        });
-      }
+        },
+        logIt
+      );
     } else {
-      chrome.tabs.query(params, currentTabs);
-      function currentTabs(tabs) {
-        let message = {
+      executeRequest(
+        {
           element: "table",
           check: true,
-        };
-        chrome.tabs.sendMessage(tabs[0].id, message, function (response) {
-          setTableExist(response.result);
-          if (response.result === true) {
-            setNumberOfTables(response.numberOfTables);
-          }
-          console.log(response);
-        });
-      }
+        },
+        handleCheck
+      );
     }
-  }, [iteration, tableExist]);
+  }, [iteration, tableExist, preIteration]);
   function exportTable() {
-    chrome.tabs.query(params, currentTabs);
-    function currentTabs(tabs) {
-      let message = {
+    executeRequest(
+      {
         element: "table",
         value: iteration,
         check: false,
         export: true,
-      };
-      chrome.tabs.sendMessage(tabs[0].id, message, function (response) {
-        console.log(response);
-        goTo(ExportContent, {
-          html: response.result.html,
-          css: response.result.css,
-          cssMapping: response.result.cssMapping,
-        });
-      });
-    }
+      },
+      handleExportTable
+    );
   }
   function unWrap() {
-    chrome.tabs.query(params, currentTabs);
-    function currentTabs(tabs) {
-      let message = {
+    executeRequest(
+      {
         element: "unWrap",
-      };
-      chrome.tabs.sendMessage(tabs[0].id, message, function (response) {
-        console.log(response);
-      });
-    }
+      },
+      logIt
+    );
   }
   function increment() {
     setPreIteration(iteration);
@@ -90,13 +94,39 @@ function Table() {
     );
     unWrap();
   }
+  function removeFocus() {
+    executeRequest({ element: "removeFocus", value: iteration }, logIt);
+  }
   return (
     <div className="grid">
-      <div className="arrow-up" onClick={decrement} />
-      <button className="button" onClick={exportTable}>
-        Export
-      </button>
-      <div className="arrow-down" onClick={increment} />
+      <div
+        className="close"
+        onClick={() => {
+          removeFocus();
+          goBack();
+        }}
+      />
+
+      {tableExist ? (
+        <div>
+          <div className="arrow-up" onClick={decrement} />
+          <button className="button" onClick={exportTable}>
+            Export
+          </button>
+          <div className="arrow-down" onClick={increment} />
+        </div>
+      ) : (
+        <div className="error-page">
+          <img
+            className="error-img"
+            alt="error to load tables"
+            src={errorImg}
+          />
+          <div className="error-message">
+            Uh oh! We can't seem to find any Tables
+          </div>
+        </div>
+      )}
     </div>
   );
 }

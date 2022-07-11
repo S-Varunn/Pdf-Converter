@@ -1,6 +1,5 @@
 /*global chrome*/
 import "./App.css";
-import { useEffect } from "react";
 import { goTo } from "react-chrome-extension-router";
 import Table from "./components/modal/Table";
 function App() {
@@ -19,24 +18,6 @@ function App() {
       });
     }
   }
-  // useEffect(() => {
-  //   chrome.tabs.query(params, currentTabs);
-  //   function currentTabs(tabs) {
-  //     let message = {
-  //       element: "getCss",
-  //     };
-  //     chrome.tabs.sendMessage(tabs[0].id, message, function (response) {
-  //       console.log(response);
-  //       for (let index = 0; index < response.hrefs.length; index++) {
-  //         let link = document.createElement("link");
-  //         link.href = response.hrefs[index];
-  //         link.rel = response.rels[index];
-  //         link.type = response.type[index];
-  //         document.head.appendChild(link);
-  //       }
-  //     });
-  //   }
-  // }, []);
 
   return (
     <div className="container">
